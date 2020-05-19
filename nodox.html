@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>dont dox me</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+    <link rel="stylesheet" href="styles.css">
+    <link href="fontawesome/css/all.css" rel="stylesheet">
+    <script src="html2canvas.js"></script>
+
+</head>
+
+<body>
+    <div class="image"></div>
+    <div class="form">
+        <form action="" id="parshaform">
+            <div class="heading">Some title</div>
+            <div class="description">Some description</div>
+            <input type="text" name="nam" id="nam" placeholder="Name">
+            <input type="text" name="date1" id="date1" placeholder="Date1">
+            <input type="text" name="date2" id="date2" placeholder="Date2">
+            <div style="width: 100%;"> <input type="button" value="Next" onclick="nextpage()" style="width:auto;">
+            </div>
+        </form>
+        <form action="" id="timesform" onsubmit="submitform()">
+            <div id="data">
+                <div class="heading">New Title</div>
+                <div class="description">New Description</div>
+                <div class="row" id="1">
+                    <input type="text" name="parsha" id="place" placeholder="Place" required>
+                    <input type="text" name="hebdate" id="placeenter" placeholder="enter" required>
+                    <input type="text" name="engdate" id="placeexit" placeholder="exit" required>
+                </div>
+                <div class="row" id="2">
+                    <input type="text" name="parsha" id="place" placeholder="Place" required>
+                    <input type="text" name="hebdate" id="placeenter" placeholder="enter" required>
+                    <input type="text" name="engdate" id="placeexit" placeholder="exit" required>
+                </div>
+                <div class="row" id="3">
+                    <input type="text" name="parsha" id="place" placeholder="Place" required>
+                    <input type="text" name="hebdate" id="placeenter" placeholder="enter" required>
+                    <input type="text" name="engdate" id="placeexit" placeholder="exit" required>
+                </div>
+
+            </div>
+            <div class="addrow" onclick="addrow()"><i class="fas fa-plus-circle"></i> Add row</div>
+            <div style="width: 100%;"><input type="submit" value="Save" style="width: auto;"></div>
+    </div>
+    </form>
+    </div>
+    <div id="newimage"></div>
+    <script>
+        function nextpage() {
+            document.querySelector('#parshaform').style.transform = 'translateX(100vw)';
+            document.querySelector('#timesform').style.transform = 'translateX(0px)';
+        }
+
+        function submitform() {
+            var rows = document.querySelectorAll(".row");
+            var imagecontent =
+                '<div class="canvas" style="letter-spacing: 1px;direction: rtl;"><div class="rightimage"><img src="images/shabbat.png" width="100%" height="100%" style="box-sizing: border-box; object-fit: contain;"></div><div class="times"><p></p><div class="parsha">' +
+                document.querySelector('#parsha').value + '</div><div class="date"><span class="hebrew"> ' + document
+                .querySelector('#hebdate').value + ' </span><span class="english">)' + document
+                .querySelector('#engdate').value +
+                '(</span></div><table style="color: white; word-spacing: 1px;" width="100%"><tr><th>&nbsp;</th><th>כניסת שבת</th><th>יציאת שבת</th></tr>';
+            for (a = 0; a < rows.length; a++) {
+                imagecontent +=
+                    '<tr><td class="name">' + rows[a].querySelector("#place").value +
+                    '</td><td>' + rows[a].querySelector("#placeenter").value + '</td><td>' + rows[a].querySelector(
+                        "#placeexit").value + '</td></tr>';
+            }
+            imagecontent +=
+                ' </table><div class="shabbatshalom">שבת שלום ומבורך!</div><div class="signature">רבנות גבעתי</div></div></div>';
+            document.querySelector('#newimage').innerHTML = imagecontent;
+            setTimeout(() => {
+                html2canvas(document.querySelector('#newimage'), {
+                    width: 768,
+                    height: 450,
+                    scrollX: 0,
+                    scrollY: -window.scrollY,
+                    windowWidth: document.querySelector("#newimage").scrollWidth,
+                    windowHeight: document.querySelector("#newimage").scrollHeight,
+                    x: 0,
+                    allowTaint: true,
+                    foreignObjectRendering: true,
+                    scale: 1
+                }).then(canvas => {
+                    // window.open(base64image);
+                    // document.querySelector('#newimage').innerHTML = base64image;
+                    var dataURL = canvas.toDataURL("image/png");
+                    var win = window.open();
+                    win.document.write('<iframe src="' + dataURL +
+                        '" frameborder="0" style="border:0; top:0px; left:0px; bottom:0px; right:0px; width:100%; height:100%;" allowfullscreen></iframe>'
+                    );
+
+                });
+            }, 1000);
+
+        }
+
+        function removerow(row) {
+            $('#' + row).remove();
+
+        }
+        var rows = 3;
+
+        function addrow() {
+            rows++;
+            var row =
+                '<div class="row" id=' + rows +
+                '><div class="addrow" onclick="removerow(' + rows +
+                ')"><i class="fas fa-minus-circle"></i> תוריד מקום</div><input type="text" name="parsha" id="place" placeholder="מקום"><input type="text" name="hebdate" id="placeenter" placeholder="כניסה"><input type="text" name="engdate" id="placeexit" placeholder="יציאה"></div>';
+            $('#data').append(row);
+
+        }
+    </script>
+</body>
+
+</html>

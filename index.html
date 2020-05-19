@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>זמני שבת יום טוב</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.css" rel="stylesheet">
+    <script src="html2canvas.js"></script>
+    <link rel="icon" href="images/shabbat.png" type="image/png">
+
+
+
+</head>
+
+<body>
+    <div class="image"></div>
+    <div class="form">
+        <form action="" id="parshaform">
+            <div class="heading">פרשה</div>
+            <div class="description">תקליד את הפרשה והתאריכים בשדות למטה</div>
+            <input type="text" name="parsha" id="parsha" placeholder="פרשת שמות">
+            <input type="text" name="hebdate" id="hebdate" placeholder="תאריך עברי">
+            <input type="text" name="engdate" id="engdate" placeholder="תאריך לועזי">
+            <div> <input type="button" value="הבא" onclick="nextpage()"></div>
+        </form>
+        <form action="" id="timesform" onsubmit="submitform()">
+            <div id="data">
+                <div class="heading">מקומות</div>
+                <div class="description">תקליד את המוקומות והזמנים שלהם בשדות למטה. כדי להוסיף עוד לחץ על ה- +</div>
+                <div class="row" id="1">
+                    <input type="text" name="parsha" id="place" placeholder="מקום" value="באר שבע/שדה תימן" required>
+                    <input type="time" name="hebdate" id="placeenter" placeholder="17:00" required>
+                    <input type="time" name="engdate" id="placeexit" placeholder="18:00" required>
+                </div>
+                <div class="row" id="2">
+                    <input type="text" name="parsha" id="place" placeholder="מקום" value="רמת הגולן" required>
+                    <input type="time" name="hebdate" id="placeenter" placeholder="17:00" required>
+                    <input type="time" name="engdate" id="placeexit" placeholder="18:00" required></div>
+                <div class="row" id="3">
+                    <input type="text" name="parsha" id="place" placeholder="מקום" value="גוש עציון" required>
+                    <input type="time" name="hebdate" id="placeenter" placeholder="17:00" required>
+                    <input type="time" name="engdate" id="placeexit" placeholder="18:00" required>
+                </div>
+            </div>
+            <div class="addrow" onclick="addrow()"><i class="fas fa-plus-circle"></i> תוסיף מקום</div>
+            <div style="width: 100%;"><input type="submit" value="שומר" style="width: auto;"><input type="button"
+                    value="חוזר" style="width: auto;" onclick="parshaback()">
+
+            </div>
+            <!-- <input type="button" onclick="submitform()" value="cheatbutton" style="width: auto;"> -->
+        </form>
+        <div class="loading">
+            <div class="loadingio-spinner-rolling-y78bung198">
+                <div class="ldio-jl1lkwmtb3">
+                    <div></div>
+                </div>
+            </div>
+        </div>
+        <div class="finalimage">
+            <div class="heading">סיום</div>
+            <div class="description">תשמור את התמונה!</div>
+            <img src="#" id="finalimage"></img>
+            <div>
+                <button onclick="opendoc()">תפתח בדף חדש</button>
+                <button onclick="save()">תשמור</button>
+                <button onclick="back()">חוזר</button></div>
+        </div>
+    </div>
+    <div id="newimage"></div>
+    <script>
+        function back() {
+            if (screen.width < 720) {
+                document.querySelector('.finalimage').style.transform = 'translateX(200vw)';
+                document.querySelector('#timesform').style.transform = 'translateX(100vw)';
+            } else {
+                document.querySelector('.finalimage').style.transform = 'translateX(100vw)';
+                document.querySelector('#timesform').style.transform = 'translateX(50vw)';
+            }
+
+        }
+
+        function parshaback() {
+            if (screen.width < 720) {
+                document.querySelector('#parshaform').style.transform = 'translateX(0vw)';
+                document.querySelector('#timesform').style.transform = 'translateX(0vw)';
+            } else {
+                document.querySelector('#parshaform').style.transform = 'translateX(0vw)';
+                document.querySelector('#timesform').style.transform = 'translateX(0vw)';
+            }
+
+        }
+
+        function save() {
+            var image = document.querySelector('#finalimage').src;
+            var link = document.createElement("a");
+            var fileName = "daveningtimes.jpeg";
+
+            link.setAttribute("href", image);
+            link.setAttribute("download", fileName);
+            link.click();
+
+        }
+
+        function opendoc() {
+            var fimage = document.querySelector('#finalimage').src;
+            var newwin = window.open("", '_blank');
+            newwin.document.write("<img src='" + fimage + "'>'");
+        }
+
+
+        function nextpage() {
+            if (screen.width < 720) {
+                document.querySelector('#parshaform').style.transform = 'translateX(200vw)';
+                document.querySelector('#timesform').style.transform = 'translateX(100vw)';
+            } else {
+                document.querySelector('#parshaform').style.transform = 'translateX(100vw)';
+                document.querySelector('#timesform').style.transform = 'translateX(50vw)';
+            }
+        }
+
+        $("#timesform").submit(function (e) {
+            e.preventDefault();
+        });
+        document.querySelector("input[type='submit']").addEventListener('keydown', enterkey);
+
+        function enterkey(event) {
+            if (event == '13') {
+                event.preventDefault();
+            }
+        }
+        var rownum = 3;
+
+        function submitform() {
+            if (screen.width < 720) {
+                document.querySelector('.loading').style.transform = 'translateX(200vw)';
+                document.querySelector('#timesform').style.transform = 'translateX(200vw)';
+            } else {
+                document.querySelector('.loading').style.transform = 'translateX(100vw)';
+                document.querySelector('#timesform').style.transform = 'translateX(100vw)';
+            }
+
+            var rows = document.querySelectorAll(".row");
+            var imagecontent =
+                '<div class="canvas" style="letter-spacing: 1px;direction: rtl;"><div class="rightimage"><img src="images/shabbat.png" width="100%" height="100%" style="box-sizing: border-box; object-fit: contain;"></div><div class="times"><p></p><div class="parsha">' +
+                document.querySelector('#parsha').value + '</div><div class="date"><span class="hebrew"> ' +
+                document
+                .querySelector('#hebdate').value + ' </span><span class="english">)' + document
+                .querySelector('#engdate').value +
+                '(</span></div><table style="color: white; word-spacing: 1px;" width="100%"><tr><th>&nbsp;</th><th>כניסת שבת</th><th>יציאת שבת</th></tr>';
+            for (a = 0; a < rows.length; a++) {
+                imagecontent +=
+                    '<tr><td class="name">' + rows[a].querySelector("#place").value +
+                    '</td><td>' + rows[a].querySelector("#placeenter").value + '</td><td>' + rows[a].querySelector(
+                        "#placeexit").value + '</td></tr>';
+            }
+            imagecontent +=
+                ' </table><div class="shabbatshalom">שבת שלום ומבורך!</div><div class="signature">רבנות גבעתי</div></div></div>';
+            document.querySelector('#newimage').innerHTML = imagecontent;
+            var height = rownum * 31 + 290;
+
+            setTimeout(() => {
+                document.querySelector('.rightimage').style.height = height + "px";
+                document.querySelector('.canvas').style.height = height + "px";
+                html2canvas(document.querySelector('#newimage'), {
+                    width: 768,
+                    height: height,
+                    scrollX: 0,
+                    scrollY: -window.scrollY,
+                    windowWidth: document.querySelector("#newimage").scrollWidth,
+                    windowHeight: document.querySelector("#newimage").scrollHeight,
+                    x: 0,
+                    scale: 2
+                }).then(canvas => {
+                    var dataURL = canvas.toDataURL("image/png");
+                    document.querySelector('#finalimage').src = dataURL;
+                    if (screen.width < 720) {
+                        document.querySelector('.loading').style.transform = 'translateX(300vw)';
+                        document.querySelector('.finalimage').style.transform = 'translateX(300vw)';
+                    } else {
+                        document.querySelector('.loading').style.transform = 'translateX(150vw)';
+                        document.querySelector('.finalimage').style.transform = 'translateX(150vw)';
+                    }
+                });
+            }, 1000);
+            setTimeout(() => {
+                document.querySelector('#newimage').innerHTML = "";
+            }, 1500);
+        }
+
+        function removerow(row) {
+            $('#' + row).remove();
+
+        }
+
+        function addrow() {
+            rownum++;
+            var row =
+                '<div class="row" id=' + rownum +
+                '><input type="text" name="parsha" id="place" placeholder="מקום" required><input type="time" name="hebdate" id="placeenter" placeholder="כניסה" required><input type="time" name="engdate" id="placeexit" placeholder="יציאה" required><div class="addrow" onclick="removerow(' +
+                rownum +
+                ')"><i class="fas fa-minus-circle"></i></div></div>';
+            $('#data').append(row);
+
+        }
+
+        function endOfWeek(date) {
+            var lastday = date.getDate() - (date.getDay() - 0) + 6;
+            return new Date(date.setDate(lastday));
+        }
+        dt = new Date();
+        dt = endOfWeek(dt);
+        let month = ("0" + (dt.getMonth() + 1)).slice(-2);
+        let day = ("0" + (dt.getDate())).slice(-2);
+        let date = dt.getFullYear() + '-' + month + '-' + day;
+        $.ajax({
+            url: 'https://www.hebcal.com/hebcal/',
+            data: {
+                "v": 1,
+                year: 'now',
+                month: dt.getMonth() + 1,
+                cfg: 'json',
+                maj: 'off',
+                min: 'off',
+                nx: 'off',
+                mf: 'off',
+                ss: 'off',
+                s: 'on',
+                mod: 'off',
+                c: 'off',
+                D: 'off',
+                d: 'on',
+                o: 'off',
+                i: 'on'
+            },
+            success: function (response) {
+                var hebrewdate;
+                var parsha;
+                response.items.forEach(function (day) {
+                    if (day.date == date) {
+                        let hebrew = day.hebrew;
+                        if (hebrew.startsWith("פרשת")) {
+                            parsha = hebrew;
+                        } else {
+                            hebrewdate = hebrew;
+                        }
+                    }
+                })
+                date = day + '.' + month + '.' +
+                    dt.getFullYear();
+                hebrewdate = hebrewdate.replace(/״/g, '"');
+                hebrewdate = hebrewdate.replace(/׳/g, "'");
+                document.querySelector('#parsha').value = parsha;
+                document.querySelector('#hebdate').value = hebrewdate;
+                document.querySelector('#engdate').value = date;
+            }
+        })
+    </script>
+</body>
+
+</html>
